@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Bus Stop Info</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+    <ul class="navbar-nav">
+      <li class="nav-brand active" style="font-weight:bold;">
+        <p class="nav-link">CapstoneProject</p>
+      </li>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Bus Search
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{{ url_for('nearest_stop') }}">Nearest Stop</a>
+            <a class="dropdown-item" href="{{ url_for('pathfinder') }}">Pathfinder</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown active">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Bus Lookup
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{{ url_for('stop_info') }}">Bus Stop</a>
+            <a class="dropdown-item" href="{{ url_for('service_info') }}">Bus Service</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('usage_guide') }}">Usage Guide</a>
+        </li>
+      </ul>
+  </nav>
+  <div class="container text-center" style="height: calc(100% - 76px)">
+    <div class="row h-100">
+      <div class="col-sm-12 align-self-center">
+        <h1 style="font-size: 4rem">Bus Service Info</h1>
+        <p style="font-size: 1.5rem">
+          Select a bus service to view its information<br />&nbsp;
+        </p>
+        <form class="col-12" action="{{ url_for('service_info_result') }}" onsubmit="return validateForm()">
+          <div class="input-group div-center d-block">
+            <select class="js-example-basic-single service" style="width: 50%" name="serviceno" id="serviceno">
+              <option></option>
+              {% for service in servicedata %}
+              <option value="{{service['ServiceNo']}}">
+                {{ service['ServiceNo'] }}
+              </option>
+              {% endfor %}
+            </select>
+            <br />&nbsp;
+          </div>
+          <div class="input-group div-center d-block">
+            <button class="btn btn-primary" type="submit">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $(".js-example-basic-single").select2();
+      $(".service").select2({
+        placeholder: "Select a bus service",
+      });
+    });
+  </script>
+  <script>
+    function validateForm() {
+      var serviceno = document.getElementById("serviceno").value;
+      if (serviceno == "") {
+        alert("Please select a bus service.");
+        return false;
+      }
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+
+</html>

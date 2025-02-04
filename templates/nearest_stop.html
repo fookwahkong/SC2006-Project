@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Nearest Stop</title>
+  <meta charset="utf-8" />
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <style type="text/css">
+    /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+    #map {
+      height: 60vh;
+      width: 70%;
+    }
+
+    /* Optional: Makes the sample page fill the window. */
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+  <script>
+    function initMap() {
+      const myLatlng = { lat: 1.3521, lng: 103.8198 };
+      const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 11.25,
+        center: myLatlng,
+      });
+      // Create the initial InfoWindow.
+      let infoWindow = new google.maps.InfoWindow({
+        content: "Click the map to select a point",
+        position: myLatlng,
+      });
+      infoWindow.open(map);
+      // Configure the click listener.
+      map.addListener("click", (mapsMouseEvent) => {
+        // Close the current InfoWindow.
+        infoWindow.close();
+        // Create a new InfoWindow.
+        f = document.getElementById("loc");
+        f.value = mapsMouseEvent.latLng;
+        infoWindow = new google.maps.InfoWindow({
+          position: mapsMouseEvent.latLng,
+        });
+        var lat = JSON.stringify(mapsMouseEvent.latLng.toJSON()["lat"], null, 2)
+        var lng = JSON.stringify(mapsMouseEvent.latLng.toJSON()["lng"], null, 2)
+        var display = "Latitude: ".concat(lat, " Longitude: ", lng)
+        infoWindow.setContent(
+          display
+        );
+        infoWindow.open(map);
+      });
+    }
+  </script>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+    <ul class="navbar-nav">
+      <li class="nav-brand active" style="font-weight:bold;">
+        <p class="nav-link">CapstoneProject</p>
+      </li>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item dropdown active">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Bus Search
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{{ url_for('nearest_stop') }}">Nearest Stop</a>
+            <a class="dropdown-item" href="{{ url_for('pathfinder') }}">Pathfinder</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Bus Lookup
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{{ url_for('stop_info') }}">Bus Stop</a>
+            <a class="dropdown-item" href="{{ url_for('service_info') }}">Bus Service</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('usage_guide') }}">Usage Guide</a>
+        </li>
+      </ul>
+  </nav>
+  <div class="container-fluid text-center" style="height: calc(100% - 76px);">
+    <div class="row h-100">
+      <div class="col-sm-12 align-self-center">
+        <h1 style="font-size: 4rem">Nearest stop</h1>
+        <p style="font-size: 1.5rem">
+          Select a point on the map to find the nearest bus stop to that point<br />&nbsp;
+        </p>
+        <div style="margin-left: auto; margin-right: auto;" id="map"></div>
+        <!-- <br />&nbsp; -->
+        <form action="{{ url_for('nearest_stop_result') }}" onsubmit="return validateForm()">
+          <input type="text" name="loc" id="loc" hidden />
+          <button class="btn btn-primary" type="submit" style="font-size:2rem;">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+  <script>
+    function validateForm() {
+      var loc = document.getElementById("loc").value;
+      if (loc == "") {
+        alert("Please select a location on the map.");
+        return false;
+      }
+    }
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key={{google_api_key}}&callback=initMap&libraries=&v=weekly"
+    async></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+
+</html>

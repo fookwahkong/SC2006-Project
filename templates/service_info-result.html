@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bus Stop</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+        <ul class="navbar-nav">
+            <li class="nav-brand active" style="font-weight:bold;">
+                <p class="nav-link">CapstoneProject</p>
+            </li>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Bus Search
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ url_for('nearest_stop') }}">Nearest Stop</a>
+                        <a class="dropdown-item" href="{{ url_for('pathfinder') }}">Pathfinder</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Bus Lookup
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ url_for('stop_info') }}">Bus Stop</a>
+                        <a class="dropdown-item" href="{{ url_for('service_info') }}">Bus Service</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('usage_guide') }}">Usage Guide</a>
+                </li>
+            </ul>
+    </nav>
+    <div class="row align-items-start m-auto" style="width: 80%;">
+        <div class="col-4">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col" colspan="100%" style="text-align: center">Bus Service</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, value in service.items() %}
+                    <th scope="row">{{ key }}</th>
+                    {% if key == "Service Number" %}
+                    <td class="serviceno">{{ value }}</td>
+                    {% elif key == "Operator" %}
+                    <td><img class="d-block m-auto" src="/static/img/{{ value }}.png" height="100" width="200"></td>
+                    {% else %}
+                    <td style="text-align: center;">{{ value }}</td>
+                    {% endif %}
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% for route in routes %}
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col" colspan="100%" style="text-align: center">Bus Direction {{ loop.index }}</th>
+                    </tr>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Bus Stop Code</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Distance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stop in route %}
+                    <tr>
+                        <th>{{ loop.index }}</th>
+                        <td>
+                            {% set stopcode = stop["stopdata"]["BusStopCode"] %}
+                            <a href="{{ url_for('stop_info_result') + '?stopcode=' + stopcode }}">
+                                <div style="height:100%;width:100%">
+                                    {{ stopcode }}
+                                </div>
+                            </a>
+                        </td>
+                        <td>{{ stop["stopdata"]["Description"] }}</td>
+                        <td>{{ stop["Distance"] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endfor %}
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+
+</html>

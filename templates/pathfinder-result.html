@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Pathfinder</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+    <ul class="navbar-nav">
+      <li class="nav-brand active" style="font-weight:bold;">
+        <p class="nav-link">CapstoneProject</p>
+      </li>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item dropdown active">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Bus Search
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{{ url_for('nearest_stop') }}">Nearest Stop</a>
+            <a class="dropdown-item" href="{{ url_for('pathfinder') }}">Pathfinder</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Bus Lookup
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{{ url_for('stop_info') }}">Bus Stop</a>
+            <a class="dropdown-item" href="{{ url_for('service_info') }}">Bus Service</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('usage_guide') }}">Usage Guide</a>
+        </li>
+      </ul>
+  </nav>
+  <div class="row align-self-center m-auto" style="width: 80%;">
+    <h1 style="text-align: center; width: 100%;">Results</h1>
+  </div>
+  {% for pathsegment in routes|batch(3) %}
+  {% set outer_loop = loop %}
+  <div class="row align-self-center m-auto" style="width: 80%;">
+    {% for path in pathsegment %}
+    <div class="col">
+      <table class="table table-bordered" id="myTable">
+        <thead>
+          <tr>
+            <th scope="col" colspan="100%" style="text-align: center">
+              Route {{ loop.index + (outer_loop.index - 1)*3 }}
+            </th>
+          </tr>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Bus Stop Code</th>
+            <th scope="col">Description</th>
+            <th scope="col">Bus Service</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for stop in path['path'] %}
+          <tr>
+            <th scope="row">{{ loop.index }}</th>
+            <td>
+              {% set stopcode = stop[0]["BusStopCode"] %}
+              <a href="{{ url_for('stop_info_result') + '?stopcode=' + stopcode }}">
+                <div style="height:100%;width:100%">
+                  {{ stopcode }}
+                </div>
+              </a>
+            </td>
+            <td>{{ stop[0]["Description"] }}</td>
+            {% if stop[1] == 'travelling' %}
+            {% set span = path['span'][loop.index-1] %}
+            {% if span != 0 %}
+            <td rowspan="{{ span }}" class="travelling" style="padding: 0%">
+              <div class="vl" style="height: {{ span*50 }}px;"></div>
+            </td>
+            {% endif %}
+            {% elif stop[1] == 'foot' %}
+            <td><img class="m-auto d-block" src="/static/img/walking.png"></td>
+            {% else %}
+            <td class="serviceno">
+              {% set serviceno = stop[1] %}
+              <a href="{{ url_for('service_info_result') + '?serviceno=' + serviceno }}">
+                <div style="height:100%;width:100%; color: black;">
+                  {{ serviceno }}
+                </div>
+              </a>
+            </td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+          <tr>
+            <th colspan="3">Distance:</th>
+            <td>{{ path['distance'] }} km</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    {% endfor %}
+  </div>
+  {% endfor %}
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

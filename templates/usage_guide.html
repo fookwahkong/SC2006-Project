@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Bus Search</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+        <ul class="navbar-nav">
+            <li class="nav-brand active" style="font-weight:bold;">
+                <p class="nav-link">CapstoneProject</p>
+            </li>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Bus Search
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ url_for('nearest_stop') }}">Nearest Stop</a>
+                        <a class="dropdown-item" href="{{ url_for('pathfinder') }}">Pathfinder</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Bus Lookup
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ url_for('stop_info') }}">Bus Stop</a>
+                        <a class="dropdown-item" href="{{ url_for('service_info') }}">Bus Service</a>
+                    </div>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{ url_for('usage_guide') }}">Usage Guide</a>
+                </li>
+            </ul>
+    </nav>
+    <br>
+    <h1 class="text-center">Usage Guide</h1>
+    <br>
+    <div class="container-flex text-center m-auto" style="width: 80%;">
+        <div class="row">
+            <div class="col-6">
+                <h3>
+                    <a href="{{ url_for('nearest_stop') }}">Nearest Bus Stop</a>
+                </h3>
+                <p>Search for the nearest bus stop to a point on the map</p>
+                <table class="table text-left">
+                    <thead>
+                        <tr>
+                            <th scope="col" colspan="100%" style="text-align: center">Steps</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>1</th>
+                            <td>Click on a point on the map to select that point. A popup with the
+                                Latitude and Longitude of the point will appear</td>
+                        </tr>
+                        <tr>
+                            <th>2</th>
+                            <td>Click on the submit button</td>
+                        </tr>
+                        <tr>
+                            <th>3</th>
+                            <td>The details of the closest bus stop to the point is displayed,
+                                with
+                                the buses that pass through it</td>
+                        </tr>
+                        <tr>
+                            <th>4</th>
+                            <td>The map image shows the straight line path of the selected point
+                                (A)
+                                and the nearest bus stop (B)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-6">
+                <h3>
+                    <a href="{{ url_for('pathfinder') }}">Pathfinder</a>
+                </h3>
+                <p>Search for the optimal route between two bus stops</p>
+                <table class="table text-left">
+                    <thead>
+                        <tr>
+                            <th scope="col" colspan="100%" style="text-align: center">Steps</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>1</th>
+                            <td>Select the source and target bus stops using drop down inputs. Type into the input to
+                                search for a bus stop by its description or code</td>
+                        </tr>
+                        <tr>
+                            <th>2</th>
+                            <td>Check the checkbox to allow walking (up to 300m) in the route found.</td>
+                        </tr>
+                        <tr>
+                            <th>3</th>
+                            <td>Select the criteria to find a route, either by "Best Route", where transfers are
+                                discouraged but used if it significantly reduces the distance travelled or "Minimize
+                                Transfers" where
+                                transfers are heavily discouraged and used only if necessary</td>
+                        </tr>
+                        <tr>
+                            <th>4</th>
+                            <td>The algorithm takes some time to calculate the routes. The time taken increases
+                                depending on the number of bus services originating from the source bus stop and
+                                terminating at the target bus stop</td>
+                        </tr>
+                        <tr>
+                            <th>5</th>
+                            <td>All routes with the shortest distance are shown. Walking distances are added to the
+                                total distance, but are twice that of the actual walking distance.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <br />&nbsp;
+            <br />&nbsp;
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <h3>
+                    <a href="{{ url_for('stop_info') }}">Bus Stop Lookup</a>
+                </h3>
+                <p>View details of a bus stop and all bus services passing through it</p>
+                <table class="table text-left">
+                    <thead>
+                        <tr>
+                            <th scope="col" colspan="100%" style="text-align: center">Steps</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>1</th>
+                            <td>Select the bus stop using drop down input. Type into the input to
+                                search for a bus stop by its description or code</td>
+                        </tr>
+                        <tr>
+                            <th>2</th>
+                            <td>Click on the submit button</td>
+                        </tr>
+                        <tr>
+                            <th>3</th>
+                            <td>The details of the bus stop is displayed,
+                                with
+                                the buses that pass through it. A map is also displayed, showing its surroundings</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-6">
+                <h3>
+                    <a href="{{ url_for('service_info') }}">Bus Service Lookup</a>
+                </h3>
+                <p>View details of a bus service and the route it serves</p>
+                <table class="table text-left">
+                    <thead>
+                        <tr>
+                            <th scope="col" colspan="100%" style="text-align: center">Steps</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>1</th>
+                            <td>Select the bus service using drop down input. Type into the input to
+                                search for a bus service by its number</td>
+                        </tr>
+                        <tr>
+                            <th>2</th>
+                            <td>Click on the submit button</td>
+                        </tr>
+                        <tr>
+                            <th>3</th>
+                            <td>The details of the bus service is displayed,
+                                with
+                                the routes that the bus operates</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-12">
+                <h3>Additional Info</h3>
+                <table class="table text-center">
+                    <tbody>
+                        <tr>
+                            <th>1</th>
+                            <td>Bus Stop Codes displayed in pathfinder and bus service lookup are clickable to view
+                                details of the bus stop</td>
+                        </tr>
+                        <tr>
+                            <th>2</th>
+                            <td>Bus Services displayed in bus stop details and pathfinder are clickable to view details
+                                of the bus service</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+
+</html>
